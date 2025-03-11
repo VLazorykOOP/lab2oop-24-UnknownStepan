@@ -9,6 +9,7 @@ void task1() {
        << multiply(33, b) + divide(multiply(d, 15) + multiply(12, a), 512) -
               multiply(65, c) + multiply(d, 14)
        << endl;
+  cout << 33 * b + ((d * 15 + 12 * a) / 512) - 65 * c + d * 14 << endl;
 }
 void task2() {}
 void task3() {}
