@@ -3,17 +3,89 @@
 #include <cstring>
 #include <fstream>
 #include <iostream>
+#include <sys/types.h>
 using namespace std;
+
+typedef struct cryptstruct {
+  union return_value {
+    unsigned int return_value;
+    struct {
+      unsigned int num : 7;
+      unsigned int ch : 8;
+      unsigned int set_of_bits : 1;
+    };
+
+  } return_value;
+} cryptstruct;
 
 // read from file and split each character in list
 char output[128];
 char a[128];
 unsigned short data_is[128];
-int read_txt_file() {
+
+void space();
+void read_txt_file();
+void console_to_array(char *a);
+void write_bins(unsigned short *a);
+void crypt();
+void decrypt();
+void output_console();
+void read_crypt_bin();
+void crypt2();
+void decrypt2();
+
+int main() {
+  char inp = 'a';
+
+  do {
+    system("clear");
+    cout << "1 - crypt \n2 - decrypt \n3 - console to array \n4 - read from "
+            "file \n5 - read from bin \n6 - write in bin\n7 - output \n0 - "
+            "exit\n8 - crypt2\n9 - decrypt2 [ ]\b\b";
+    char inp = 'a';
+    cin >> inp;
+    switch (inp) {
+    case '1':
+      crypt();
+      break;
+    case '2':
+      decrypt();
+      break;
+    case '3':
+      console_to_array(a);
+      break;
+    case '4':
+      read_txt_file();
+      break;
+    case '5':
+      read_crypt_bin();
+      break;
+    case '6':
+      write_bins(data_is);
+      break;
+    case '7':
+      output_console();
+      break;
+    case '8':
+      crypt2();
+      break;
+    case '9':
+      decrypt2();
+      break;
+    case '0':
+      break;
+    }
+    cin.get();
+    cin.get();
+  } while (inp != '0');
+  return 0;
+}
+
+void read_txt_file() {
   FILE *f = fopen("test.txt", "r");
   fread(a, sizeof(char), 128, f);
   fclose(f);
-  return 0;
+  space();
 }
 void console_to_array(char *a) {
   string s;
@@ -21,6 +93,7 @@ void console_to_array(char *a) {
   for (int i = 0; i < s.length(); i++) {
     a[i] = s[i];
   }
+  space();
   cout << endl;
 }
 // write in binary file array
@@ -39,14 +112,18 @@ void output_console() {
     cout << output[i];
   }
 }
-int crypt() {
+void space() {
   for (int i = 0; i < 128; i++) {
 
     if (a[i] == '\0') {
       a[i] = ' ';
     }
   }
+}
+
+void crypt() {
   for (int i = 0; i < 128; i++) {
+    cout << a[i] << endl;
     char b = a[i];
     int counts = 0;
     for (int j = 0; j < 16; j++) {
@@ -67,7 +144,6 @@ int crypt() {
     data_is[i] <<= 7;
     data_is[i] |= i;
   }
-  return 0;
 }
 void decrypt() {
   cout << "decrypt" << endl;
@@ -94,41 +170,54 @@ void decrypt() {
     cout << endl;
   }
 }
-int main() {
-  char inp = 'a';
 
-  do {
-    system("clear");
-    cout << "1 - crypt \n2 - decrypt \n3 - console to array \n4 - read from "
-            "file \n5 - read from bin \n6 - write in bin\n7 - output \n0 - "
-            "exit\n [ ]\b\b";
-    char inp = 'a';
-    cin >> inp;
-    switch (inp) {
-    case '1':
-      crypt();
-      break;
-    case '2':
-      decrypt();
-      break;
-    case '3':
-      console_to_array(a);
-      break;
-    case '4':
-      read_txt_file();
-      break;
-    case '5':
-      read_crypt_bin();
-      break;
-    case '6':
-      write_bins(data_is);
-      break;
-    case '7':
-      output_console();
-      break;
+void crypt2() {
+  for (int i = 0; i < 128; i++) {
+    char b = a[i];
+    int counts = 0;
+    for (int j = 0; j < 16; j++) {
+      if (b & (1 << j)) {
+        counts = !(counts);
+      }
+      if (i & (1 << j)) {
+        counts = !(counts);
+      }
     }
-    cin.get();
-    cin.get();
-  } while (inp != '0');
-  return 0;
+    cryptstruct c;
+
+    c.return_value.set_of_bits = counts;
+    c.return_value.ch = b;
+    c.return_value.num = i;
+
+    data_is[i] = c.return_value.return_value;
+    cout << bitset<16>(data_is[i]) << endl;
+  }
+}
+void decrypt2() {
+
+  cout << "decrypt" << endl;
+  for (int i = 0; i < 128; i++) {
+    int sets = 0;
+    cout << bitset<16>(data_is[i]) << endl;
+    cryptstruct c;
+    c.return_value.return_value = data_is[i];
+    for (int j = 0; j < 15; j++) {
+      if (c.return_value.return_value & (1 << j)) {
+        sets++;
+      }
+    }
+    if ((sets & 1) == (c.return_value.return_value >> 15)) {
+      cout << "integirity passed";
+    } else {
+      cout << "integirity failed";
+      continue;
+    }
+
+    int index = (c.return_value.num);
+    char b = (c.return_value.ch);
+    output[index] = b;
+    cout << output[index];
+
+    cout << endl;
+  }
 }
