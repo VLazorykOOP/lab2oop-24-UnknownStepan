@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 using namespace std;
+namespace cryptprog {
 
 typedef struct cryptstruct {
   union return_value {
@@ -32,8 +33,10 @@ void output_console();
 void read_crypt_bin();
 void crypt2();
 void decrypt2();
-
-int main() {
+int run();
+} // namespace cryptprog
+using namespace cryptprog;
+int cryptprog::run() {
   char inp = 'a';
 
   do {
@@ -72,7 +75,7 @@ int main() {
       decrypt2();
       break;
     case '0':
-      break;
+      continue;
     }
 
     cout << inp;
@@ -82,9 +85,9 @@ int main() {
   } while (inp != '0');
   return 0;
 }
-
+namespace cryptprog {
 void read_txt_file() {
-  ifstream f("test.txt");
+  ifstream f("src/test.txt");
   f.getline(a, 128);
   f.close();
   space();
@@ -100,12 +103,12 @@ void console_to_array(char *a) {
 }
 // write in binary file array
 void write_bins(unsigned short *a) {
-  ofstream ofsb("test.bin", ios::out | ios::binary);
+  ofstream ofsb("src/test.bin", ios::out | ios::binary);
   ofsb.write((char *)a, sizeof(unsigned short) * 128);
   ofsb.close();
 }
 void read_crypt_bin() {
-  ifstream f("test.bin", ios::in | ios::binary);
+  ifstream f("src/test.bin", ios::in | ios::binary);
   f.read((char *)data_is, sizeof(unsigned short) * 128);
   f.close();
 }
@@ -223,3 +226,4 @@ void decrypt2() {
     cout << endl;
   }
 }
+} // namespace cryptprog
