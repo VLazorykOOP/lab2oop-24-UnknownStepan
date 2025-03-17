@@ -8,13 +8,14 @@ using namespace std;
 
 typedef struct cryptstruct {
   union return_value {
-    unsigned int return_value;
+
     struct {
       unsigned int num : 7;
       unsigned int ch : 8;
       unsigned int set_of_bits : 1;
     };
 
+    unsigned int return_value;
   } return_value;
 } cryptstruct;
 
