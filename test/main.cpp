@@ -1,9 +1,7 @@
-#include <bitset>
-#include <cctype>
-#include <cstring>
+#include <format>
 #include <fstream>
 #include <iostream>
-#include <sys/types.h>
+#include <string>
 using namespace std;
 
 typedef struct cryptstruct {
@@ -76,16 +74,19 @@ int main() {
     case '0':
       break;
     }
+
+    cout << inp;
     cin.get();
     cin.get();
+
   } while (inp != '0');
   return 0;
 }
 
 void read_txt_file() {
-  FILE *f = fopen("test.txt", "r");
-  fread(a, sizeof(char), 128, f);
-  fclose(f);
+  ifstream f("test.txt");
+  f.getline(a, 128);
+  f.close();
   space();
 }
 void console_to_array(char *a) {
@@ -104,9 +105,9 @@ void write_bins(unsigned short *a) {
   ofsb.close();
 }
 void read_crypt_bin() {
-  FILE *f = fopen("test.bin", "r");
-  fread(data_is, sizeof(char), 256, f);
-  fclose(f);
+  ifstream f("test.bin", ios::in | ios::binary);
+  f.read((char *)data_is, sizeof(unsigned short) * 128);
+  f.close();
 }
 void output_console() {
   for (int i = 0; i < 128; i++) {
@@ -124,7 +125,7 @@ void space() {
 
 void crypt() {
   for (int i = 0; i < 128; i++) {
-    cout << a[i] << endl;
+    cout << a[i] << " ";
     char b = a[i];
     int counts = 0;
     for (int j = 0; j < 16; j++) {
@@ -150,7 +151,7 @@ void decrypt() {
   cout << "decrypt" << endl;
   for (int i = 0; i < 128; i++) {
     int sets = 0;
-    cout << bitset<16>(data_is[i]) << endl;
+    cout << format("{:0>16b}", data_is[i]) << endl;
     for (int j = 0; j < 15; j++) {
       if (data_is[i] & (1 << j)) {
         sets++;
@@ -191,7 +192,7 @@ void crypt2() {
     c.return_value.num = i;
 
     data_is[i] = c.return_value.return_value;
-    cout << bitset<16>(data_is[i]) << endl;
+    cout << format("{:0>16b}", data_is[i]) << endl;
   }
 }
 void decrypt2() {
@@ -199,7 +200,7 @@ void decrypt2() {
   cout << "decrypt" << endl;
   for (int i = 0; i < 128; i++) {
     int sets = 0;
-    cout << bitset<16>(data_is[i]) << endl;
+    cout << format("{:0>16b}", data_is[i]) << endl;
     cryptstruct c;
     c.return_value.return_value = data_is[i];
     for (int j = 0; j < 15; j++) {
