@@ -9,7 +9,7 @@ void interface() {
   do {
     clear_buffer();
     system("clear");
-    cout << " Menu \n[ ]\b\b";
+    cout << " Menu \n[1] Task 1\n[2] Task 2\n[3] Task 3\n[ ]\b\b";
     ch = cin.get();
     clear_buffer();
     switch (ch) {

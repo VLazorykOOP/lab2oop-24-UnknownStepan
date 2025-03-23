@@ -1,5 +1,6 @@
 #include "tasks.h"
 #include "crypt.h"
+#include "encode.h"
 #include "math.h"
 void task1() {
   cout << " Calculation of expressions using bitwise operations  \n";
@@ -13,4 +14,4 @@ void task1() {
   cout << 33 * b + ((d * 15 + 12 * a) / 512) - 65 * c + d * 14 << endl;
 }
 void task2() { cryptprog::run(); }
-void task3() {}
+void task3() { encode::run(); }

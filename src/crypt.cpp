@@ -74,8 +74,6 @@ int cryptprog::run() {
     case '9':
       decrypt2();
       break;
-    case '0':
-      continue;
     }
 
     cout << inp;
